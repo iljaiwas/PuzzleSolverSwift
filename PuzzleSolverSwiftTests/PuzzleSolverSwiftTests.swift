@@ -57,10 +57,8 @@ class PuzzleSolverSwiftTests: XCTestCase {
 
     func testIntitialState ()
     {
-        let solver = Solver(maxDepth: 30, outputEnabled: true)
-
-        let state = solver.buildInitialBoard();
-        let b3 = state.pieceWithName("b3");
+        let state = Solver.buildInitialBoard()
+        let b3 = state.pieceWithName("b3")
 
         XCTAssertFalse(state.moveIsValid(piece: b3!, direction: .left))
 
@@ -70,6 +68,47 @@ class PuzzleSolverSwiftTests: XCTestCase {
         XCTAssertTrue (movablePieces.contains {$0 == state.pieceWithName("y1") })
         XCTAssertTrue (movablePieces.contains {$0 == state.pieceWithName("y3") })
         XCTAssertFalse (movablePieces.contains {$0 == state.pieceWithName("r1") })
+    }
 
+    func testMinimalInitialState()
+    {
+        var pieces = Set<Piece>()
+        let solver = Solver(maxDepth: 30, outputEnabled: true)
+
+        let r1 = Piece(name: "r1", pos: Point(x:1, y:0), size: Size (width: 2, height: 2))
+        pieces.insert(r1)
+
+        solver.solve(initialBoardState: BoardState (pieces: pieces, size: Size(width: 4, height: 5)))
+    }
+
+    func testMinimalInitialState2()
+    {
+        var pieces = Set<Piece>()
+        let solver = Solver(maxDepth: 30, outputEnabled: true)
+
+        let r1 = Piece(name: "r1", pos: Point(x:1, y:0), size: Size (width: 2, height: 2))
+        pieces.insert(r1)
+
+        let y2 = Piece(name: "y2", pos: Point(x:1, y:2), size: Size (width: 2, height: 1))
+        pieces.insert(y2)
+
+        solver.solve(initialBoardState: BoardState (pieces: pieces, size: Size(width: 4, height: 5)))
+    }
+
+    func testMinimalInitialState3()
+    {
+        var pieces = Set<Piece>()
+        let solver = Solver(maxDepth: 30, outputEnabled: true)
+
+        let r1 = Piece(name: "r1", pos: Point(x:1, y:0), size: Size (width: 2, height: 2))
+        pieces.insert(r1)
+
+        let y1 = Piece(name: "y1", pos: Point(x:0, y:1), size: Size (width: 1, height: 2))
+        pieces.insert(y1)
+
+        let y2 = Piece(name: "y2", pos: Point(x:1, y:2), size: Size (width: 2, height: 1))
+        pieces.insert(y2)
+
+        solver.solve(initialBoardState: BoardState (pieces: pieces, size: Size(width: 4, height: 5)))
     }
 }

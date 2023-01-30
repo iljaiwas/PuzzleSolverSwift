@@ -15,10 +15,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
-        NSLog("solver started")
-        Solver(maxDepth: 30, outputEnabled: false).solve()
-        NSLog("solver finished")
-
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            // Code only executes when not running tests
+            NSLog("solver started")
+            Solver(maxDepth: 40, outputEnabled: false).solve(initialBoardState: Solver.buildInitialBoard())
+            NSLog("solver finished")
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

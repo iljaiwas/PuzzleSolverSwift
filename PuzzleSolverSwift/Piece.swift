@@ -22,6 +22,19 @@ case up
 case down
 case left
 case right
+
+    func oppositeDirection() -> Direction {
+        switch(self) {
+        case .up:
+            return .down
+        case .down:
+            return .up
+        case .right:
+            return .left
+        case .left:
+            return .right
+        }
+    }
 }
 
 struct Piece: Hashable {
