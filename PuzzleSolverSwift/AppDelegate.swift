@@ -15,7 +15,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
-        Solver().solve()
+        NSLog("solver started")
+        Solver(maxDepth: 30, outputEnabled: false).solve()
+        NSLog("solver finished")
+
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

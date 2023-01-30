@@ -57,7 +57,7 @@ class PuzzleSolverSwiftTests: XCTestCase {
 
     func testIntitialState ()
     {
-        let solver = Solver()
+        let solver = Solver(maxDepth: 30, outputEnabled: true)
 
         let state = solver.buildInitialBoard();
         let b3 = state.pieceWithName("b3");

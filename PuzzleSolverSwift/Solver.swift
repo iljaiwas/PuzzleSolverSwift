@@ -20,6 +20,9 @@ struct Move
 
 struct Solver
 {
+    let maxDepth: Int
+    let outputEnabled: Bool
+
     func buildInitialBoard() -> BoardState {
         var pieces = Set<Piece>()
 
@@ -65,44 +68,48 @@ struct Solver
         let initialBoardSate = buildInitialBoard()
         var checkedStates = Set<BoardState>()
 
-        _ = solveBoardState (initialBoardSate, stateStack: [BoardState](), moves: [Move](), checkedStates: &checkedStates, maxDepth: 30)
+        _ = solveBoardState (initialBoardSate, stateStack: [BoardState](), moves: [Move](), checkedStates: &checkedStates, maxDepth: maxDepth)
+    }
+
+    func printStatus(_ string: String ) {
+        if (outputEnabled) {
+            print (string)
+        }
     }
 
     func solveBoardState (_ state: BoardState, stateStack: [BoardState], moves: [Move], checkedStates: inout Set<BoardState>, maxDepth: Int) -> Bool{
         if (stateStack.count > maxDepth) {
-            print("Maximum stack depth reached -- backtracking")
+            printStatus("Maximum stack depth reached -- backtracking")
             return false
         }
 
         for piecePermutation in state.movablePieces().uniquePermutations() {
             for piece in piecePermutation {
-                for directionPermutation in [Direction.up, Direction.down, Direction.left, Direction.right].uniquePermutations() {
-                    for direction in directionPermutation {
-                        if state.moveIsValid(piece: piece, direction: direction) {
-                            print ("Depth \(stateStack.count), Move \(piece.name) -> \(direction)")
-                            let newBoardState = state.boardStateAfterMove(piece: piece, direction: direction)
-                            if stateStack.contains(where: {$0 == newBoardState }) {
-                                print("State already in stack -- backtracking")
-                                return false
+                for direction in [Direction.up, Direction.down, Direction.left, Direction.right] {
+                    if state.moveIsValid(piece: piece, direction: direction) {
+                        printStatus ("Depth \(stateStack.count), Move \(piece.name) -> \(direction)")
+                        let newBoardState = state.boardStateAfterMove(piece: piece, direction: direction)
+                        if stateStack.contains(where: {$0 == newBoardState }) {
+                            printStatus("State already in stack -- backtracking")
+                            return false
+                        }
+                        if checkedStates.contains(where: {$0 == newBoardState }) {
+                            printStatus("State already checked -- backtracking")
+                            return false
+                        }
+                        if boardStateIsValidSolution (newBoardState) {
+                            print("Solution Found")
+                            for move in moves {
+                                move.printMove()
                             }
-                            if checkedStates.contains(where: {$0 == newBoardState }) {
-                                print("State already checked -- backtracking")
-                                return false
-                            }
-                            if boardStateIsValidSolution (newBoardState) {
-                                print("Solution Found")
-                                for move in moves {
-                                    move.printMove()
-                                }
+                            return true
+                        } else {
+                            var newStates = stateStack
+                            newStates.append(state)
+                            var newMoves = moves
+                            newMoves.append(Move (pieceName: piece.name, direction: direction))
+                            if solveBoardState (newBoardState, stateStack: newStates, moves: newMoves, checkedStates: &checkedStates, maxDepth: maxDepth) {
                                 return true
-                            } else {
-                                var newStates = stateStack
-                                newStates.append(state)
-                                var newMoves = moves
-                                newMoves.append(Move (pieceName: piece.name, direction: direction))
-                                if solveBoardState (newBoardState, stateStack: newStates, moves: newMoves, checkedStates: &checkedStates, maxDepth: maxDepth) {
-                                    return true
-                                }
                             }
                         }
                     }

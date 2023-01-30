@@ -28,6 +28,14 @@ struct Piece: Hashable {
     let name: String
     let pos: Point
     let size: Size
+    let occupiedPositions: Set<Point>
+
+    init(name: String, pos: Point, size: Size ) {
+        self.name = name
+        self.pos = pos
+        self.size = size
+        self.occupiedPositions = Piece.computeOccupiedPositions (pos: pos, size: size)
+    }
 
     var maxX: Int {
         return pos.x + size.width - 1
@@ -37,11 +45,11 @@ struct Piece: Hashable {
         return pos.y + size.height - 1
     }
 
-    func occupiedPositions() -> Set<Point> {
+    static func computeOccupiedPositions(pos: Point, size: Size) -> Set<Point> {
         var result = Set<Point>()
 
-        for x in pos.x...maxX {
-            for y in pos.y...maxY {
+        for x in pos.x...(pos.x + size.width - 1){
+            for y in pos.y...(pos.y + size.height - 1) {
                 result.insert(Point(x: x, y: y))
             }
         }
@@ -65,10 +73,7 @@ struct Piece: Hashable {
     }
 
     func intersectsWithPiece(_ otherPiece: Piece) -> Bool {
-        let occupiedPositions = occupiedPositions()
-        let otherOccupiedPositions = otherPiece.occupiedPositions()
-
-        return occupiedPositions.intersection(otherOccupiedPositions).isEmpty == false
+        return occupiedPositions.intersection(otherPiece.occupiedPositions).isEmpty == false
     }
 }
 
