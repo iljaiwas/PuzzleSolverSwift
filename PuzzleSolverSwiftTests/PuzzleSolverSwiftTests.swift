@@ -18,19 +18,58 @@ class PuzzleSolverSwiftTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testIntersectsWithPiece() {
+        let pieceA = Piece (name: "A", pos: Point (x: 0, y: 0 ), size: Size (width: 2, height: 1))
+
+        let pieceB = Piece (name: "B", pos: Point (x: 0, y: 0 ), size: Size (width: 2, height: 1))
+        XCTAssertTrue(pieceA.intersectsWithPiece(pieceB))
+
+        let pieceC = Piece (name: "C", pos: Point (x: 1, y: 0 ), size: Size (width: 2, height: 1))
+        XCTAssertTrue(pieceA.intersectsWithPiece(pieceC))
+
+        let pieceD = Piece (name: "D", pos: Point (x: 2, y: 0 ), size: Size (width: 2, height: 1))
+        XCTAssertFalse(pieceA.intersectsWithPiece(pieceD))
+
+        let b3 = Piece(name: "b3", pos: Point(x:1, y:4), size: Size (width: 1, height: 1))
+        let y4 = Piece(name: "y4", pos: Point(x:0, y:3), size: Size (width: 1, height: 2))
+
+        XCTAssertFalse(b3.intersectsWithPiece(y4))
+        XCTAssertFalse(y4.intersectsWithPiece(b3))
+
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    func testPieceFitsBoardBounds ()
+    {
+        let board = BoardState (pieces: Set<Piece>(), size: Size (width: 2, height: 2))
+
+        let pieceA = Piece (name: "A", pos: Point (x: 0, y: 0 ), size: Size (width: 2, height: 1))
+        XCTAssertTrue(board.pieceFitsBoardBounds(pieceA))
+
+        let pieceB = Piece (name: "B", pos: Point (x: 0, y: 0 ), size: Size (width: 2, height: 2))
+        XCTAssertTrue(board.pieceFitsBoardBounds(pieceB))
+
+        let pieceC = Piece (name: "C", pos: Point (x: 0, y: 0 ), size: Size (width: 3, height: 1))
+        XCTAssertFalse(board.pieceFitsBoardBounds(pieceC))
+
+        let pieceD = Piece (name: "D", pos: Point (x: 2, y: 0 ), size: Size (width: 1, height: 1))
+        XCTAssertFalse(board.pieceFitsBoardBounds(pieceD))
     }
 
+    func testIntitialState ()
+    {
+        let solver = Solver()
+
+        let state = solver.buildInitialBoard();
+        let b3 = state.pieceWithName("b3");
+
+        XCTAssertFalse(state.moveIsValid(piece: b3!, direction: .left))
+
+        let movablePieces = state.movablePieces()
+        XCTAssertEqual(movablePieces.count, 2)
+
+        XCTAssertTrue (movablePieces.contains {$0 == state.pieceWithName("y1") })
+        XCTAssertTrue (movablePieces.contains {$0 == state.pieceWithName("y3") })
+        XCTAssertFalse (movablePieces.contains {$0 == state.pieceWithName("r1") })
+
+    }
 }
