@@ -84,8 +84,9 @@ struct Solver
 
         for piecePermutation in state.movablePieces().uniquePermutations() {
             for piece in piecePermutation {
-                for directionPermutation in [Direction.up, Direction.down, Direction.left, Direction.right].uniquePermutations() {
-                    for direction in directionPermutation {
+                for direction in [Direction.up, Direction.down, Direction.left, Direction.right] {
+                //for directionPermutation in [Direction.up, Direction.down, Direction.left, Direction.right].uniquePermutations() {
+                   // for direction in directionPermutation {
                         if (moves.last?.pieceName == piece.name && moves.last?.direction == direction.oppositeDirection()) {
                             // prevent direct undoing of previous move
                             continue
@@ -117,7 +118,7 @@ struct Solver
                                 }
                             }
                         }
-                    }
+                   // }
                 }
             }
         }

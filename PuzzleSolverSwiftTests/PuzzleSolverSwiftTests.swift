@@ -111,4 +111,24 @@ class PuzzleSolverSwiftTests: XCTestCase {
 
         solver.solve(initialBoardState: BoardState (pieces: pieces, size: Size(width: 4, height: 5)))
     }
+
+    func testMinimalInitialState4()
+    {
+        var pieces = Set<Piece>()
+        let solver = Solver(maxDepth: 30, outputEnabled: false)
+
+        let r1 = Piece(name: "r1", pos: Point(x:1, y:0), size: Size (width: 2, height: 2))
+        pieces.insert(r1)
+
+        let y1 = Piece(name: "y1", pos: Point(x:0, y:1), size: Size (width: 1, height: 2))
+        pieces.insert(y1)
+
+        let y2 = Piece(name: "y2", pos: Point(x:1, y:2), size: Size (width: 2, height: 1))
+        pieces.insert(y2)
+
+        let y3 = Piece(name: "y3", pos: Point(x:3, y:1), size: Size (width: 1, height: 2))
+        pieces.insert(y3)
+
+        solver.solve(initialBoardState: BoardState (pieces: pieces, size: Size(width: 4, height: 5)))
+    }
 }
